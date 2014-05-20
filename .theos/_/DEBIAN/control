@@ -1,0 +1,10 @@
+Package: com.phillipt.touchpass
+Name: TouchPass
+Depends: mobilesubstrate
+Architecture: iphoneos-arm
+Description: Unlocking your device is just a tap away
+Maintainer: Phillip Tennen
+Author: Phillip Tennen
+Section: Tweaks
+Version: 0.0.1-72
+Installed-Size: 88
