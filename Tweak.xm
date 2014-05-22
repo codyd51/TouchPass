@@ -53,7 +53,9 @@ NS_INLINE CGFloat calc(CGFloat percent) { return percent * height; }
 
 %new
 -(void)unlock {
-	[sbLSView scrollToPage:0 animated:YES];
+	[UIView animateWithDuration:1 animations:^(void) {
+		sbLSView scrollToPage:0 animated:YES];
+	}];
 }
 
 %end
