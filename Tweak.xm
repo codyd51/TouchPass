@@ -53,7 +53,7 @@ BOOL unlockedOnce = false;
 	button.center = CGPointMake(160+width, calc(.862676056));
 
 	UILongPressGestureRecognizer *longPress = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(unlockWithLongPress:)];
-    [button addGestureRecognizer:longPress];
+    	[button addGestureRecognizer:longPress];
 
 	wind.scrollEnabled = NO;
 
