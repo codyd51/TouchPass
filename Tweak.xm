@@ -64,7 +64,7 @@ BOOL unlockedOnce = false;
 %new
 -(void)unlock {
 	[UIView animateWithDuration:0.75 animations:^(void) {
-		sbLSView scrollToPage:0 animated:YES];
+		[sbLSView scrollToPage:0 animated:YES];
 	}];
 }
 
