@@ -16,6 +16,11 @@
 +(id)sharedInstance;
 @end
 
+@interface SBLockScreenManager : NSObject
++(id)sharedInstance;
+-(BOOL)attemptUnlockWithPasscode:(id)fp8;
+@end
+
 @interface SBLockScreenView : UIView
 - (void)scrollToPage:(long long)arg1 animated:(BOOL)arg2;
 @end
@@ -26,6 +31,8 @@ SBLockScreenView* sbLSView;
 int height = [[UIScreen mainScreen] bounds].size.height;
 int width = [[UIScreen mainScreen] bounds].size.width;
 NS_INLINE CGFloat calc(CGFloat percent) { return percent * height; }
+NSString *originalPasscode;
+BOOL unlockedOnce = false;
 
 %hook SBLockScreenView
 
@@ -45,6 +52,9 @@ NS_INLINE CGFloat calc(CGFloat percent) { return percent * height; }
 	button.frame = CGRectMake(0, 0, 150, 50);
 	button.center = CGPointMake(160+width, calc(.862676056));
 
+	UILongPressGestureRecognizer *longPress = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(unlockWithLongPress:)];
+    	[button addGestureRecognizer:longPress];
+
 	wind.scrollEnabled = NO;
 
 	[wind addSubview:button];
@@ -58,6 +68,29 @@ NS_INLINE CGFloat calc(CGFloat percent) { return percent * height; }
 	}];
 }
 
+%new
+-(void)unlockWithLongPress:(UILongPressGestureRecognizer*)sender {
+	if (sender.state == UIGestureRecognizerStateBegan) {
+		if (unlockedOnce) {
+			[(SBLockScreenManager *)[objc_getClass("SBLockScreenManager") sharedInstance] attemptUnlockWithPasscode:[NSString stringWithFormat:@"%@", originalPasscode]];
+		} else {
+			UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Unlock your device" message:@"Unlock your device each respring/reboot" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+			[alert show];
+		}
+	}
+}
+
+%end
+
+%hook SBDeviceLockController
+-(BOOL)attemptDeviceUnlockWithPassword:(NSString *)passcode appRequested:(BOOL)requested {
+	if (%orig) {
+		originalPasscode = passcode;
+		unlockedOnce = true;
+	}
+
+	return %orig;
+}
 %end
 
 %hook SBFGlintyStringView
